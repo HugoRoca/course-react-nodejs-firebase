@@ -3,7 +3,7 @@ import "./App.css";
 
 import PropertyList from "./components/ListaInmuebles";
 import AppNavbar from "./components/layout/AppNavbar";
-import SignUp from './components/security/RegisterUser'
+import SignUp from './components/security/Signup'
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { compose } from "recompose";
+import { consumerFirebase } from "../../server";
 import {
   Container,
   Avatar,
@@ -9,6 +11,12 @@ import {
 } from "@material-ui/core";
 import { LockOpenOutlined } from "@material-ui/icons";
 
+const initialUser = {
+  name: "",
+  last_name: "",
+  email: "",
+  password: "",
+};
 const style = {
   paper: {
     marginTop: 8,
@@ -30,8 +38,9 @@ const style = {
   },
 };
 
-export default class RegisterUser extends Component {
+class Signup extends Component {
   state = {
+    firebase: null,
     user: {
       name: "",
       last_name: "",
@@ -39,6 +48,16 @@ export default class RegisterUser extends Component {
       password: "",
     },
   };
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.firebase === prevState.firebase) {
+      return null;
+    }
+
+    return {
+      firebase: nextProps.firebase,
+    };
+  }
 
   onChange = (e) => {
     let user = Object.assign({}, this.state.user);
@@ -50,7 +69,15 @@ export default class RegisterUser extends Component {
 
   save = (e) => {
     e.preventDefault();
-    console.log(this.state.user);
+    const { user, firebase } = this.state;
+    firebase.db
+      .collection("Users")
+      .add(user)
+      .then((res) => {
+        console.log("successfully", res);
+        this.setState({ user: initialUser });
+      })
+      .catch((err) => console.log);
   };
 
   render() {
@@ -124,3 +151,5 @@ export default class RegisterUser extends Component {
     );
   }
 }
+
+export default compose(consumerFirebase)(Signup);

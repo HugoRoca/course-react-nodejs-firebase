@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { Container, Avatar, Typography, Grid, TextField, Button } from "@material-ui/core";
+import {
+  Container,
+  Avatar,
+  Typography,
+  Grid,
+  TextField,
+  Button,
+} from "@material-ui/core";
 import { LockOpenOutlined } from "@material-ui/icons";
 
 const style = {
@@ -20,10 +27,32 @@ const style = {
   submit: {
     marginTop: 15,
     marginBottom: 20,
-  }
+  },
 };
 
 export default class RegisterUser extends Component {
+  state = {
+    user: {
+      name: "",
+      last_name: "",
+      email: "",
+      password: "",
+    },
+  };
+
+  onChange = (e) => {
+    let user = Object.assign({}, this.state.user);
+    user[e.target.name] = e.target.value;
+    this.setState({
+      user,
+    });
+  };
+
+  save = (e) => {
+    e.preventDefault();
+    console.log(this.state.user);
+  };
+
   render() {
     return (
       <Container maxWidth="md">
@@ -37,21 +66,56 @@ export default class RegisterUser extends Component {
           <form style={style.form}>
             <Grid container spacing={2}>
               <Grid item md={6} xs={12}>
-                <TextField name="name" fullWidth label="Input your name" />
+                <TextField
+                  value={this.state.user.name}
+                  onChange={this.onChange}
+                  name="name"
+                  fullWidth
+                  label="Input your name"
+                />
               </Grid>
               <Grid item md={6} xs={12}>
-                <TextField name="last_name" fullWidth label="Input your last name" />
+                <TextField
+                  value={this.state.user.last_name}
+                  onChange={this.onChange}
+                  name="last_name"
+                  fullWidth
+                  label="Input your last name"
+                />
               </Grid>
               <Grid item md={6} xs={12}>
-                <TextField name="email" fullWidth label="Input your email" />
+                <TextField
+                  value={this.state.user.email}
+                  onChange={this.onChange}
+                  name="email"
+                  fullWidth
+                  label="Input your email"
+                />
               </Grid>
               <Grid item md={6} xs={12}>
-                <TextField type="password" name="password" fullWidth label="Input your password" />
+                <TextField
+                  value={this.state.user.password}
+                  onChange={this.onChange}
+                  type="password"
+                  name="password"
+                  fullWidth
+                  label="Input your password"
+                />
               </Grid>
             </Grid>
             <Grid container justify="center">
               <Grid item md={6} xs={12}>
-                <Button type="submit" variant="contained" fullWidth size="large" color="primary" style={style.submit}>Save</Button>
+                <Button
+                  onClick={this.save}
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  size="large"
+                  color="primary"
+                  style={style.submit}
+                >
+                  Save
+                </Button>
               </Grid>
             </Grid>
           </form>

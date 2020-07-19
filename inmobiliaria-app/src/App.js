@@ -7,7 +7,7 @@ import SignUp from './components/security/RegisterUser'
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core";
 import theme from "./theme/theme";
 import Grid from "@material-ui/core/Grid";
 

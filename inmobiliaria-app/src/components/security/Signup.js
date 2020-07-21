@@ -60,6 +60,7 @@ class Signup extends Component {
   }
 
   onChange = (e) => {
+    // TODO: create clone
     let user = Object.assign({}, this.state.user);
     user[e.target.name] = e.target.value;
     this.setState({
@@ -70,14 +71,26 @@ class Signup extends Component {
   save = (e) => {
     e.preventDefault();
     const { user, firebase } = this.state;
-    firebase.db
-      .collection("Users")
-      .add(user)
-      .then((res) => {
-        console.log("successfully", res);
-        this.setState({ user: initialUser });
+
+    firebase.auth
+      .createUserWithEmailAndPassword(user.email, user.password)
+      .then((auth) => {
+        const saveUser = {
+          userId: auth.user.uid,
+          email: user.email,
+          name: user.name,
+          last_name: user.last_name,
+        };
+        firebase.db
+          .collection("Users")
+          .add(saveUser)
+          .then((res) => {
+            console.log("successfully", res);
+            this.setState({ user: initialUser });
+          })
+          .catch(console.error);
       })
-      .catch((err) => console.log);
+      .catch(console.error);
   };
 
   render() {
@@ -94,6 +107,7 @@ class Signup extends Component {
             <Grid container spacing={2}>
               <Grid item md={6} xs={12}>
                 <TextField
+                  variant="outlined"
                   value={this.state.user.name}
                   onChange={this.onChange}
                   name="name"
@@ -103,6 +117,7 @@ class Signup extends Component {
               </Grid>
               <Grid item md={6} xs={12}>
                 <TextField
+                  variant="outlined"
                   value={this.state.user.last_name}
                   onChange={this.onChange}
                   name="last_name"
@@ -112,6 +127,7 @@ class Signup extends Component {
               </Grid>
               <Grid item md={6} xs={12}>
                 <TextField
+                  variant="outlined"
                   value={this.state.user.email}
                   onChange={this.onChange}
                   name="email"
@@ -121,6 +137,7 @@ class Signup extends Component {
               </Grid>
               <Grid item md={6} xs={12}>
                 <TextField
+                  variant="outlined"
                   value={this.state.user.password}
                   onChange={this.onChange}
                   type="password"

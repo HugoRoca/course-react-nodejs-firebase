@@ -3,7 +3,8 @@ import "./App.css";
 
 import PropertyList from "./components/ListaInmuebles";
 import AppNavbar from "./components/layout/AppNavbar";
-import SignUp from './components/security/Signup'
+import SignUp from "./components/security/Signup";
+import SignIn from "./components/security/Signin";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
@@ -19,8 +20,9 @@ class App extends Component {
           <AppNavbar />
           <Grid container>
             <Switch>
-              <Route path='/' exact component={PropertyList}></Route>
-              <Route path='/signup' exact component={SignUp}></Route>
+              <Route path="/" exact component={PropertyList}></Route>
+              <Route path="/signup" exact component={SignUp}></Route>
+              <Route path="/signin" exact component={SignIn}></Route>
             </Switch>
           </Grid>
         </MuiThemeProvider>

@@ -11,12 +11,6 @@ import {
 } from "@material-ui/core";
 import { LockOpenOutlined } from "@material-ui/icons";
 
-const initialUser = {
-  name: "",
-  last_name: "",
-  email: "",
-  password: "",
-};
 const style = {
   paper: {
     marginTop: 8,
@@ -84,9 +78,8 @@ class Signup extends Component {
         firebase.db
           .collection("Users")
           .add(saveUser)
-          .then((res) => {
-            console.log("successfully", res);
-            this.setState({ user: initialUser });
+          .then(() => {
+            this.props.history.push("/");
           })
           .catch(console.error);
       })
@@ -133,6 +126,7 @@ class Signup extends Component {
                   name="email"
                   fullWidth
                   label="Input your email"
+                  type="email"
                 />
               </Grid>
               <Grid item md={6} xs={12}>

@@ -10,13 +10,18 @@ import SignIn from "./components/security/Signin";
 import { FirebaseContext } from "./server";
 
 // TODO Material Design
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core";
+import { ThemeProvider as MuiThemeProvider, Snackbar } from "@material-ui/core";
 import theme from "./theme/theme";
 import Grid from "@material-ui/core/Grid";
+
+// TODO Sessions
+import { useStateValue } from "./session/store";
+import snackBarReducer from "./session/reducers/snackBar.reducer";
 
 function App(props) {
   let firebase = React.useContext(FirebaseContext);
   const [authenticationStarted, setupFirebaseStart] = React.useState(false);
+  const [{ snackBar }, dispatch] = useStateValue();
 
   useEffect(() => {
     firebase.isStarted().then((res) => {
@@ -25,18 +30,38 @@ function App(props) {
   });
 
   return authenticationStarted !== false ? (
-    <Router>
-      <MuiThemeProvider theme={theme}>
-        <AppNavbar />
-        <Grid container>
-          <Switch>
-            <Route path="/" exact component={PropertyList}></Route>
-            <Route path="/signup" exact component={SignUp}></Route>
-            <Route path="/signin" exact component={SignIn}></Route>
-          </Switch>
-        </Grid>
-      </MuiThemeProvider>
-    </Router>
+    <React.Fragment>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={3000}
+        onClose={() =>
+          dispatch({
+            type: "OPEN_SNACKBAR",
+            snackBar: {
+              open: false,
+              message: "",
+            },
+          })
+        }
+        ContentProps={{ "aria-describedby": "message-id" }}
+        message={
+          <span id="message-id">{snackBar ? snackBar.message : ""}</span>
+        }
+        open={snackBar ? snackBarReducer.open : false}
+      ></Snackbar>
+      <Router>
+        <MuiThemeProvider theme={theme}>
+          <AppNavbar />
+          <Grid container>
+            <Switch>
+              <Route path="/" exact component={PropertyList}></Route>
+              <Route path="/signup" exact component={SignUp}></Route>
+              <Route path="/signin" exact component={SignIn}></Route>
+            </Switch>
+          </Grid>
+        </MuiThemeProvider>
+      </Router>
+    </React.Fragment>
   ) : null;
 }
 

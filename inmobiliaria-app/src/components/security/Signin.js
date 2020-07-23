@@ -9,6 +9,9 @@ import {
 import { LockOpenOutlined } from "@material-ui/icons";
 import { compose } from "recompose";
 import { consumerFirebase } from "../../server";
+import { login } from "../../session/actions/session.action";
+import { openMessage } from "../../session/actions/snackBar.action";
+import { StateContext } from "../../session/store";
 
 const style = {
   paper: {
@@ -28,6 +31,8 @@ const style = {
 };
 
 class Signin extends Component {
+  static contextType = StateContext;
+
   state = {
     firebase: null,
     user: {
@@ -55,15 +60,21 @@ class Signin extends Component {
     });
   };
 
-  login = (e) => {
+  login = async (e) => {
     e.preventDefault();
+    const [{ session }, dispatch] = this.context;
     const { firebase, user } = this.state;
-    firebase.auth
-      .signInWithEmailAndPassword(user.email, user.password)
-      .then((r) => {
-        this.props.history.push("/");
-      })
-      .catch(console.log);
+    const { email, password } = user;
+    const response = await login(dispatch, firebase, email, password);
+
+    if (response.status) {
+      this.props.history.push("/");
+    } else {
+      openMessage(dispatch, {
+        open: true,
+        message: response.message,
+      });
+    }
   };
 
   render() {

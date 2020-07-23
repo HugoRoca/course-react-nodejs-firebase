@@ -14,12 +14,12 @@ export const login = (dispatch, firebase, email, password) => {
               session: userDb,
               authenticate: true,
             });
-            resolve();
+            resolve({ status: true });
           });
       })
       .catch((err) => {
-        console.log(err);
-        reject();
+        console.log({ status: false, message: err.message });
+        resolve({ status: false, message: err.message });
       });
   });
 };
@@ -45,12 +45,12 @@ export const createUser = (dispatch, firebase, user) => {
               newUser,
               authenticate: true,
             });
-            resolve();
+            resolve({ status: true });
           });
       })
       .catch((err) => {
-        console.log(err);
-        reject();
+        console.log({ status: false, message: err.message });
+        resolve({ status: false, message: err.message });
       });
   });
 };

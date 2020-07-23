@@ -10,6 +10,9 @@ import {
   Button,
 } from "@material-ui/core";
 import { LockOpenOutlined } from "@material-ui/icons";
+import { createUser } from "../../session/actions/session.action";
+import { openMessage } from "../../session/actions/snackBar.action";
+import { StateContext } from "../../session/store";
 
 const style = {
   paper: {
@@ -33,6 +36,8 @@ const style = {
 };
 
 class Signup extends Component {
+  static contextType = StateContext;
+
   state = {
     firebase: null,
     user: {
@@ -62,29 +67,29 @@ class Signup extends Component {
     });
   };
 
-  save = (e) => {
+  async save(e) {
     e.preventDefault();
+    const [{ session }, dispatch] = this.context;
     const { user, firebase } = this.state;
-
-    firebase.auth
-      .createUserWithEmailAndPassword(user.email, user.password)
-      .then((auth) => {
-        const saveUser = {
-          userId: auth.user.uid,
-          email: user.email,
-          name: user.name,
-          last_name: user.last_name,
-        };
-        firebase.db
-          .collection("Users")
-          .add(saveUser)
-          .then(() => {
-            this.props.history.push("/");
-          })
-          .catch(console.error);
+    await createUser(dispatch, firebase, user)
+      .then((r) => {
+        console.log("test!!!");
+        if (r.status) {
+          this.props.history.push("/");
+        } else {
+          openMessage(dispatch, {
+            open: true,
+            message: "error ocurred in login",
+          });
+        }
       })
-      .catch(console.error);
-  };
+      .catch((e) => {
+        openMessage(dispatch, {
+          open: true,
+          message: e.message,
+        });
+      });
+  }
 
   render() {
     return (

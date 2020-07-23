@@ -16,7 +16,6 @@ import Grid from "@material-ui/core/Grid";
 
 // TODO Sessions
 import { useStateValue } from "./session/store";
-import snackBarReducer from "./session/reducers/snackBar.reducer";
 
 function App(props) {
   let firebase = React.useContext(FirebaseContext);
@@ -47,7 +46,7 @@ function App(props) {
         message={
           <span id="message-id">{snackBar ? snackBar.message : ""}</span>
         }
-        open={snackBar ? snackBarReducer.open : false}
+        open={snackBar ? snackBar.open : false}
       ></Snackbar>
       <Router>
         <MuiThemeProvider theme={theme}>

@@ -1,6 +1,6 @@
-export const openMessage = (dispatch, open) => {
+export const openMessage = (dispatch, snackBar) => {
   dispatch({
     type: 'OPEN_SNACKBAR',
-    snackBar: open,
+    snackBar,
   })
 }

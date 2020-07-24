@@ -8,6 +8,7 @@ import AppNavbar from "./components/Layout/AppNavBar/AppNavbar";
 import SignUp from "./components/Security/Signup/Signup";
 import SignIn from "./components/Security/Signin/Signin";
 import { FirebaseContext } from "./server";
+import RouteAuth from "./components/Security/RouteAuth/RouteAuth";
 
 // TODO Material Design
 import { ThemeProvider as MuiThemeProvider, Snackbar } from "@material-ui/core";
@@ -53,7 +54,12 @@ function App(props) {
           <AppNavbar />
           <Grid container>
             <Switch>
-              <Route path="/" exact component={PropertyList}></Route>
+              <RouteAuth
+                exact
+                path="/"
+                component={PropertyList}
+                authenticateFirebase={firebase.auth.currentUser}
+              />
               <Route path="/signup" exact component={SignUp}></Route>
               <Route path="/signin" exact component={SignIn}></Route>
             </Switch>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { compose } from "recompose";
-import { consumerFirebase } from "../../server";
+import { consumerFirebase } from "../../../server";
 import {
   Container,
   Avatar,
@@ -9,31 +9,11 @@ import {
   TextField,
   Button,
 } from "@material-ui/core";
+import { style } from "./Signup.css";
 import { LockOpenOutlined } from "@material-ui/icons";
-import { createUser } from "../../session/actions/session.action";
-import { openMessage } from "../../session/actions/snackBar.action";
-import { StateContext } from "../../session/store";
-
-const style = {
-  paper: {
-    marginTop: 8,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: 8,
-    backgroundColor: "#e53935",
-  },
-  form: {
-    width: "100%",
-    marginTop: 10,
-  },
-  submit: {
-    marginTop: 15,
-    marginBottom: 20,
-  },
-};
+import { createUser } from "../../../session/actions/session.action";
+import { openMessage } from "../../../session/actions/snackBar.action";
+import { StateContext } from "../../../session/store";
 
 class Signup extends Component {
   static contextType = StateContext;

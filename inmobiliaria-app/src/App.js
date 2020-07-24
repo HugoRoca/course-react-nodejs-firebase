@@ -5,8 +5,8 @@ import "./App.css";
 // TODO Components
 import PropertyList from "./components/ListaInmuebles";
 import AppNavbar from "./components/Layout/AppNavBar/AppNavbar";
-import SignUp from "./components/security/Signup";
-import SignIn from "./components/security/Signin";
+import SignUp from "./components/Security/Signup/Signup";
+import SignIn from "./components/Security/Signin/Signin";
 import { FirebaseContext } from "./server";
 
 // TODO Material Design

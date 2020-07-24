@@ -8,27 +8,11 @@ import {
 } from "@material-ui/core";
 import { LockOpenOutlined } from "@material-ui/icons";
 import { compose } from "recompose";
-import { consumerFirebase } from "../../server";
-import { login } from "../../session/actions/session.action";
-import { openMessage } from "../../session/actions/snackBar.action";
-import { StateContext } from "../../session/store";
-
-const style = {
-  paper: {
-    marginTop: 9,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: 5,
-    backgroundColor: "#e53935",
-  },
-  form: {
-    with: "100%",
-    marginTop: 8,
-  },
-};
+import { consumerFirebase } from "../../../server";
+import { login } from "../../../session/actions/session.action";
+import { openMessage } from "../../../session/actions/snackBar.action";
+import { StateContext } from "../../../session/store";
+import { style } from "./Signin.css";
 
 class Signin extends Component {
   static contextType = StateContext;

@@ -1,34 +1,125 @@
 import React, { Component } from "react";
-import { styles } from './BarSession.css'
+import { withRouter } from "react-router-dom";
+import { consumerFirebase } from "../../../server";
+import { compose } from "recompose";
+import { StateContext } from "../../../session/store";
+import { logout } from "../../../session/actions/session.action";
+import { styles } from "./BarSession.css";
+import { MainRight } from "../MainRight/MainRight";
+import { MainLeft } from "../MainLeft/MainLeft";
+import photoUser from "../../../logo.svg";
+import { Link } from 'react-router-dom'
 import {
   Toolbar,
   Typography,
   withStyles,
   Button,
   IconButton,
+  Drawer,
+  Avatar,
 } from "@material-ui/core";
 
 class BarSession extends Component {
+  static contextType = StateContext;
+
+  state = {
+    firebase: null,
+    right: false,
+    left: false
+  };
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let newObjects = {};
+
+    if (nextProps.firebase !== prevState.firebase) {
+      newObjects.firebase = nextProps.firebase;
+    }
+
+    return newObjects;
+  }
+
+  singOut = () => {
+    const { firebase } = this.state;
+    const [{ session }, dispatch] = this.context;
+    logout(dispatch, firebase).then((res) => {
+      this.props.history.push("/signin");
+    });
+  };
+
+  toggleDrawer = (side, open) => () => {
+    this.setState({
+      [side]: open,
+    });
+  };
+
   render() {
     const { classes } = this.props;
+    const [{ session }, dispatch] = this.context;
+    const { user } = session;
+
     return (
-      <Toolbar>
-        <IconButton color="inherit">
-          <i className="material-icons">menu</i>
-        </IconButton>
-        <Typography variant="h6">Property</Typography>
-        <div className={classes.grow}></div>
-        <div className={classes.sectionDesktop}>
-          <Button color="inherit">Login</Button>
-        </div>
-        <div className={classes.sectionMobile}>
-          <IconButton color="inherit">
-            <i className="material-icons">more_vert</i>
+      <div>
+        <Drawer
+          open={this.state.left}
+          onClose={this.toggleDrawer("left", false)}
+          anchor="left"
+        >
+          <div
+            role="button"
+            onClick={this.toggleDrawer("left", false)}
+            onKeyDown={this.toggleDrawer("left", false)}
+          >
+            <MainLeft classes={classes}></MainLeft>
+          </div>
+        </Drawer>
+        <Drawer
+          open={this.state.right}
+          onClose={this.toggleDrawer("right", false)}
+          anchor="right"
+        >
+          <div
+            role="button"
+            onClick={this.toggleDrawer("right", false)}
+            onKeyDown={this.toggleDrawer("right", false)}
+          >
+            <MainRight
+              classes={classes}
+              user={user}
+              photoUser={photoUser}
+              logout={this.singOut}
+            ></MainRight>
+          </div>
+        </Drawer>
+        <Toolbar>
+          <IconButton color="inherit" onClick={this.toggleDrawer("left", true)}>
+            <i className="material-icons">menu</i>
           </IconButton>
-        </div>
-      </Toolbar>
+          <Typography variant="h6">Properties</Typography>
+          <div className={classes.grow}></div>
+          <div className={classes.sectionDesktop}>
+            <IconButton color="inherit" component={Link} to="">
+              <i className="material-icons">mail_outline</i>
+            </IconButton>
+            <Button color="inherit" onClick={this.singOut}>Logout</Button>
+            <Button color="inherit">{user.name}</Button>
+            <Avatar src={photoUser}></Avatar>
+          </div>
+          <div className={classes.sectionMobile}>
+            <IconButton
+              color="inherit"
+              onClick={this.toggleDrawer("right", true)}
+            >
+              <i className="material-icons">more_vert</i>
+            </IconButton>
+          </div>
+        </Toolbar>
+      </div>
     );
   }
 }
 
-export default withStyles(styles)(BarSession);
+export default compose(
+  withRouter,
+  consumerFirebase,
+  withStyles(styles)
+)(BarSession);

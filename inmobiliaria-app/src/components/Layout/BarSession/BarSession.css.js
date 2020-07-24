@@ -14,4 +14,17 @@ export const styles = (theme) => ({
   grow: {
     flexGrow: 1,
   },
+  avatarSize: {
+    width: 40,
+    height: 40,
+  },
+  listItemText: {
+    fontSize: "14px",
+    fontWeight: 600,
+    paddingLeft: "15px",
+    color: "#212121",
+  },
+  list: {
+    width: 240
+  }
 });

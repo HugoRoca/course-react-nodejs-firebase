@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { styles } from './BarSession.css'
 import {
   Toolbar,
   Typography,
@@ -6,24 +7,6 @@ import {
   Button,
   IconButton,
 } from "@material-ui/core";
-
-const styles = (theme) => ({
-  sectionDesktop: {
-    display: "none",
-    [theme.breakpoints.up("md")]: {
-      display: "flex",
-    },
-  },
-  sectionMobile: {
-    display: "flex",
-    [theme.breakpoints.up("md")]: {
-      display: "none",
-    },
-  },
-  grow: {
-    flexGrow: 1,
-  },
-});
 
 class BarSession extends Component {
   render() {

@@ -12,6 +12,8 @@ import { style } from "./Profile.css";
 import Logo from "../../../logo.svg";
 import { consumerFirebase } from "../../../server";
 import { openMessage } from "../../../session/actions/snackBar.action";
+import ImageUpload from "react-images-upload";
+import { v4 as uuidv4 } from "uuid";
 
 const ProfileUser = (props) => {
   const [{ session }, dispatch] = useStateValue();
@@ -58,6 +60,41 @@ const ProfileUser = (props) => {
       });
   };
 
+  const uploadPhoto = (photos) => {
+    // catch photo
+    const photo = photos[0];
+    // rename photo
+    const keyUniquePhoto = uuidv4();
+    // get name photo
+    const namePhoto = photo.name;
+    // get extension photo
+    const extensionPhoto = namePhoto.split(".").pop();
+    // create new name alias photo
+    const newNamePhoto = `${
+      namePhoto.split(".")[0]
+    }_${keyUniquePhoto}.${extensionPhoto}`
+      .replace(/\s/g, "_")
+      .toLowerCase();
+
+    firebase.saveDocument(newNamePhoto, photo).then((data) => {
+      firebase.getDocument(newNamePhoto).then((urlPhoto) => {
+        status.photo = urlPhoto;
+
+        firebase.db
+          .collection("Users")
+          .doc(firebase.auth.currentUser.uid)
+          .set({ photo: urlPhoto }, { merge: true })
+          .then((res) => {
+            dispatch({
+              type: "CHANGE_SESSION",
+              newUser: status,
+              authenticate: true,
+            });
+          });
+      });
+    });
+  };
+
   useEffect(() => {
     if (status.id === "") {
       if (session) {
@@ -65,6 +102,8 @@ const ProfileUser = (props) => {
       }
     }
   });
+
+  const photoKey = uuidv4();
 
   return session ? (
     <Container component="main" maxWidth="md" justify="center">
@@ -113,6 +152,17 @@ const ProfileUser = (props) => {
                 label="Phone"
                 value={status.phone}
                 onChange={changeData}
+              />
+            </Grid>
+            <Grid item xs={12} md={12}>
+              <ImageUpload
+                withIcon={false}
+                key={photoKey}
+                singleImage={true}
+                buttonText="Select your image profile"
+                onChange={uploadPhoto}
+                imgExtension={[".jpg", ".gif", ".png", ".jpeg"]}
+                maxFileSize={5242880}
               />
             </Grid>
           </Grid>

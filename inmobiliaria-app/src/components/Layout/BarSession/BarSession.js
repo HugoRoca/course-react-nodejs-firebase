@@ -8,7 +8,7 @@ import { styles } from "./BarSession.css";
 import { MainRight } from "../MainRight/MainRight";
 import { MainLeft } from "../MainLeft/MainLeft";
 import photoUser from "../../../logo.svg";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 import {
   Toolbar,
   Typography,
@@ -25,7 +25,7 @@ class BarSession extends Component {
   state = {
     firebase: null,
     right: false,
-    left: false
+    left: false,
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -85,7 +85,7 @@ class BarSession extends Component {
             <MainRight
               classes={classes}
               user={user}
-              photoUser={photoUser}
+              photoUser={user.photo || photoUser}
               logout={this.singOut}
             ></MainRight>
           </div>
@@ -100,9 +100,11 @@ class BarSession extends Component {
             <IconButton color="inherit" component={Link} to="">
               <i className="material-icons">mail_outline</i>
             </IconButton>
-            <Button color="inherit" onClick={this.singOut}>Logout</Button>
+            <Button color="inherit" onClick={this.singOut}>
+              Logout
+            </Button>
             <Button color="inherit">{user.name}</Button>
-            <Avatar src={photoUser}></Avatar>
+            <Avatar src={user.photo || photoUser}></Avatar>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton

@@ -7,6 +7,7 @@ import PropertyList from "./components/ListaInmuebles";
 import AppNavbar from "./components/Layout/AppNavBar/AppNavbar";
 import SignUp from "./components/Security/Signup/Signup";
 import SignIn from "./components/Security/Signin/Signin";
+import Profile from './components/Security/Profile/Profile'
 import { FirebaseContext } from "./server";
 import RouteAuth from "./components/Security/RouteAuth/RouteAuth";
 
@@ -58,6 +59,12 @@ function App(props) {
                 exact
                 path="/"
                 component={PropertyList}
+                authenticateFirebase={firebase.auth.currentUser}
+              />
+              <RouteAuth
+                exact
+                path="/profile"
+                component={Profile}
                 authenticateFirebase={firebase.auth.currentUser}
               />
               <Route path="/signup" exact component={SignUp}></Route>

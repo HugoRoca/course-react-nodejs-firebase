@@ -10,15 +10,60 @@ import {
 } from "@material-ui/core";
 import { style } from "./Profile.css";
 import Logo from "../../../logo.svg";
+import { consumerFirebase } from "../../../server";
+import { openMessage } from "../../../session/actions/snackBar.action";
 
 const ProfileUser = (props) => {
-  const [{ session }, disptach] = useStateValue();
+  const [{ session }, dispatch] = useStateValue();
+  const firebase = props.firebase;
   let [status, changeStatus] = useState({
     name: "",
     last_name: "",
     phone: "",
     photo: "",
     id: "",
+  });
+
+  const changeData = (e) => {
+    const { name, value } = e.target;
+    changeStatus((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const saveChanges = (e) => {
+    e.preventDefault();
+    firebase.db
+      .collection("Users")
+      .doc(firebase.auth.currentUser.uid)
+      .set(status, { merge: true })
+      .then((success) => {
+        dispatch({
+          type: "LOGIN",
+          session: status,
+          authenticate: true,
+        });
+
+        openMessage(dispatch, {
+          open: true,
+          message: "Update successfully!",
+        });
+      })
+      .catch((err) => {
+        openMessage(dispatch, {
+          open: true,
+          message: "Update error " + err.message,
+        });
+      });
+  };
+
+  useEffect(() => {
+    if (status.id === "") {
+      if (session) {
+        changeStatus(session.user);
+      }
+    }
   });
 
   return session ? (
@@ -36,6 +81,8 @@ const ProfileUser = (props) => {
                 variant="outlined"
                 fullWidth
                 label="Name"
+                value={status.name}
+                onChange={changeData}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -44,6 +91,8 @@ const ProfileUser = (props) => {
                 variant="outlined"
                 fullWidth
                 label="Last name"
+                value={status.last_name}
+                onChange={changeData}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -52,6 +101,8 @@ const ProfileUser = (props) => {
                 variant="outlined"
                 fullWidth
                 label="Email"
+                value={status.email}
+                onChange={changeData}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -60,6 +111,8 @@ const ProfileUser = (props) => {
                 variant="outlined"
                 fullWidth
                 label="Phone"
+                value={status.phone}
+                onChange={changeData}
               />
             </Grid>
           </Grid>
@@ -72,6 +125,7 @@ const ProfileUser = (props) => {
                 size="large"
                 color="primary"
                 style={style.submit}
+                onClick={saveChanges}
               >
                 Save changes
               </Button>
@@ -83,4 +137,4 @@ const ProfileUser = (props) => {
   ) : null;
 };
 
-export default ProfileUser;
+export default consumerFirebase(ProfileUser);

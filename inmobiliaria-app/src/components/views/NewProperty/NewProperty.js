@@ -8,11 +8,19 @@ import {
   Typography,
   TextField,
   Button,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@material-ui/core";
 import { style } from "./NewProperty.css";
 import { HouseOutlined } from "@material-ui/icons";
 import { consumerFirebase } from "../../../server";
 import { openMessage } from "../../../session/actions/snackBar.action";
+import ImageUpload from "react-images-upload";
+import { v4 as uuidv4 } from "uuid";
+
+const photoKey = uuidv4();
 
 class NewProperty extends Component {
   state = {
@@ -23,6 +31,7 @@ class NewProperty extends Component {
       description: "",
       description_in: "",
     },
+    files: [],
   };
 
   onChange = (e) => {
@@ -47,6 +56,20 @@ class NewProperty extends Component {
           message: err.message,
         });
       });
+  };
+
+  uploadPhotos = (documents) => {
+    Object.keys(documents).forEach(function (key) {
+      documents[key].urlTemp = URL.createObjectURL(documents[key]);
+    });
+
+    this.setState({
+      files: this.state.files.concat(documents),
+    });
+  };
+
+  deletePhoto = (name) => {
+    console.log(name);
   };
 
   render() {
@@ -116,6 +139,41 @@ class NewProperty extends Component {
                 value={this.state.property.description_in}
                 onChange={this.onChange}
               />
+            </Grid>
+          </Grid>
+          <Grid container justify="center">
+            <Grid item xs={12} sm={6}>
+              <ImageUpload
+                key={photoKey}
+                withIcon={true}
+                buttonText="Select your images"
+                onChange={this.uploadPhotos}
+                imgExtension={[".gif", ".png", ".jpg", ".jpeg"]}
+                maxFileSize={5242880}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Table>
+                <TableBody>
+                  {this.state.files.map((element, i) => (
+                    <TableRow key={i}>
+                      <TableCell align="left">
+                        <img src={element.urlTemp} style={style.photo} />
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          size="small"
+                          onClick={this.deletePhoto(element.name)}
+                        >
+                          Delete
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </Grid>
           </Grid>
           <Grid container justify="center">

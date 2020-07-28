@@ -22,4 +22,7 @@ export const style = {
     marginTop: 15,
     marginBottom: 10,
   },
+  photo: {
+    height: "100px",
+  },
 };

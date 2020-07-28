@@ -122,6 +122,7 @@ const ProfileUser = (props) => {
                 label="Name"
                 value={status.name}
                 onChange={changeData}
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -132,6 +133,7 @@ const ProfileUser = (props) => {
                 label="Last name"
                 value={status.last_name}
                 onChange={changeData}
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -142,6 +144,7 @@ const ProfileUser = (props) => {
                 label="Email"
                 value={status.email}
                 onChange={changeData}
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -152,6 +155,7 @@ const ProfileUser = (props) => {
                 label="Phone"
                 value={status.phone}
                 onChange={changeData}
+                autoComplete="off"
               />
             </Grid>
             <Grid item xs={12} md={12}>

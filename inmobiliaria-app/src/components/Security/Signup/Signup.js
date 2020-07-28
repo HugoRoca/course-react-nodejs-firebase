@@ -91,6 +91,7 @@ class Signup extends Component {
                   name="name"
                   fullWidth
                   label="Input your name"
+                  autoComplete="off"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -101,6 +102,7 @@ class Signup extends Component {
                   name="last_name"
                   fullWidth
                   label="Input your last name"
+                  autoComplete="off"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -112,6 +114,7 @@ class Signup extends Component {
                   fullWidth
                   label="Input your email"
                   type="email"
+                  autoComplete="off"
                 />
               </Grid>
               <Grid item md={6} xs={12}>
@@ -123,6 +126,7 @@ class Signup extends Component {
                   name="password"
                   fullWidth
                   label="Input your password"
+                  autoComplete="off"
                 />
               </Grid>
             </Grid>

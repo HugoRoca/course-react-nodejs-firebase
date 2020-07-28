@@ -15,7 +15,7 @@ export const MainLeft = ({ classes }) => (
     </List>
     <Divider />
     <List>
-      <ListItem component={Link} button to="">
+      <ListItem component={Link} button to="/property/new">
         <i className="material-icons">add_box</i>
         <ListItemText
           classes={{ primary: classes.listItemText }}

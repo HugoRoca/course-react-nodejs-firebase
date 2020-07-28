@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 
 // TODO Components
-import PropertyList from "./components/ListaInmuebles";
+import PropertyList from "./components/views/ListProperty/ListaInmuebles";
+import NewProperty from './components/views/NewProperty/NewProperty'
 import AppNavbar from "./components/Layout/AppNavBar/AppNavbar";
 import SignUp from "./components/Security/Signup/Signup";
 import SignIn from "./components/Security/Signin/Signin";
@@ -65,6 +66,12 @@ function App(props) {
                 exact
                 path="/profile"
                 component={Profile}
+                authenticateFirebase={firebase.auth.currentUser}
+              />
+              <RouteAuth
+                exact
+                path="/property/new"
+                component={NewProperty}
                 authenticateFirebase={firebase.auth.currentUser}
               />
               <Route path="/signup" exact component={SignUp}></Route>

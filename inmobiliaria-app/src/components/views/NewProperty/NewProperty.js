@@ -68,8 +68,12 @@ class NewProperty extends Component {
     });
   };
 
-  deletePhoto = (name) => {
-    console.log(name);
+  deletePhoto = (name) => () => {
+    this.setState({
+      files: this.state.files.filter(file => {
+        return file.name !== name
+      })
+    })
   };
 
   render() {

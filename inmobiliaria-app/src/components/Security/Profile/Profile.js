@@ -95,11 +95,15 @@ const ProfileUser = (props) => {
     });
   };
 
+  const validateStateForm = (e) => {
+    if (session) {
+      changeStatus(session.user);
+    }
+  };
+
   useEffect(() => {
     if (status.id === "") {
-      if (session) {
-        changeStatus(session.user);
-      }
+      validateStateForm(session);
     }
   });
 

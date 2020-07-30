@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./App.css";
 
 // TODO Components
-import PropertyList from "./components/views/ListProperty/ListaInmuebles";
+import PropertyList from "./components/views/ListProperty/ListProperty";
 import NewProperty from './components/views/NewProperty/NewProperty'
 import AppNavbar from "./components/Layout/AppNavBar/AppNavbar";
 import SignUp from "./components/Security/Signup/Signup";

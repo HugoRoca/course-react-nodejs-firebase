@@ -37,6 +37,6 @@ export default class Firebase {
   }
 
   saveDocuments(documents) {
-    return this.storage.ref.saveDocuments(documents)
+    return this.storage.ref().saveDocuments(documents)
   }
 }

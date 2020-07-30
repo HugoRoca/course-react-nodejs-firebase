@@ -19,6 +19,7 @@ import { consumerFirebase } from "../../../server";
 import { openMessage } from "../../../session/actions/snackBar.action";
 import ImageUpload from "react-images-upload";
 import { v4 as uuidv4 } from "uuid";
+import { createKeyword } from "../../../session/actions/keyword.action";
 
 const photoKey = uuidv4();
 
@@ -43,19 +44,44 @@ class NewProperty extends Component {
   };
 
   save = () => {
-    const { property } = this.state;
-    this.props.firebase.db
-      .collection("Properties")
-      .add(property)
-      .then((r) => {
-        this.props.history.push("");
-      })
-      .catch((err) => {
-        openMessage({
-          open: true,
-          message: err.message,
+    const { files, property } = this.state;
+    // create alias for image and save in database
+
+    Object.keys(files).forEach(function (key) {
+      const valueDynamic = Math.floor(new Date().getTime() / 1000);
+      const name = files[key].name;
+      const extension = name.split(".").pop();
+
+      files[key].alias = (
+        name.split(".")[0] +
+        "_" +
+        valueDynamic +
+        "." +
+        extension
+      )
+        .replace(/\s/g, "_")
+        .toLowerCase();
+    });
+
+    const textSearch = `${property.direction} ${property.city} ${property.country}`;
+    const keywords = createKeyword(textSearch);
+
+    this.props.firebase.saveDocuments(files).then((arrayUrl) => {
+      property.photos = arrayUrl;
+      property.keywords = keywords;
+      this.props.firebase.db
+        .collection("Properties")
+        .add(property)
+        .then((r) => {
+          this.props.history.push("");
+        })
+        .catch((err) => {
+          openMessage({
+            open: true,
+            message: err.message,
+          });
         });
-      });
+    });
   };
 
   uploadPhotos = (documents) => {
@@ -70,10 +96,10 @@ class NewProperty extends Component {
 
   deletePhoto = (name) => () => {
     this.setState({
-      files: this.state.files.filter(file => {
-        return file.name !== name
-      })
-    })
+      files: this.state.files.filter((file) => {
+        return file.name !== name;
+      }),
+    });
   };
 
   render() {

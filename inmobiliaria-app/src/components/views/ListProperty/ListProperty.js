@@ -84,6 +84,25 @@ class ListProperty extends Component {
     });
   }
 
+  deleteProperty = (id) => {
+    this.props.firebase.db
+      .collection("Properties")
+      .doc(id)
+      .delete()
+      .then((success) => {
+        this.deleteIdListProperty(id);
+      });
+  };
+
+  deleteIdListProperty = (id) => {
+    const newPropertyList = this.state.properties.filter(
+      (property) => property.id !== id
+    );
+    this.setState({
+      properties: newPropertyList,
+    });
+  };
+
   render() {
     return (
       <Container style={style.cardGrid}>
@@ -129,10 +148,15 @@ class ListProperty extends Component {
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button size="small" color="primary">
+                      <Button size="small" color="primary" variant="outlined">
                         Edit
                       </Button>
-                      <Button size="small" color="primary">
+                      <Button
+                        size="small"
+                        color="secondary"
+                        variant="outlined"
+                        onClick={() => this.deleteProperty(card.id)}
+                      >
                         Delete
                       </Button>
                     </CardActions>

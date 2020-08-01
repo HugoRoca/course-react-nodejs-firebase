@@ -18,8 +18,7 @@ import { style } from "./EditProperty.css";
 import { HouseOutlined } from "@material-ui/icons";
 import ImageUpload from "react-images-upload";
 import { v4 as uuidv4 } from "uuid";
-
-const photoKey = uuidv4();
+import { createKeyword } from "../../../session/actions/keyword.action";
 
 class EditProperty extends Component {
   state = {
@@ -41,22 +40,88 @@ class EditProperty extends Component {
     });
   };
 
-  uploadPhotos = (photo) => {};
+  uploadPhotos = (photos) => {
+    const { property } = this.state;
+    const { id } = this.props.match.params;
 
-  deletePhoto = (photo) => () => {};
+    Object.keys(photos).forEach(function (key) {
+      const code = uuidv4();
+      const nameImage = photos[key].name;
+      const extension = nameImage.split(".").pop();
+      photos[key].alias = `${nameImage.split(".")[0]}_${code}.${extension}`
+        .replace(/\s/g, "_")
+        .toLowerCase();
+    });
+
+    this.props.firebase.saveDocuments(photos).then((arrayUrl) => {
+      property.photos = property.photos.concat(arrayUrl);
+
+      this.props.firebase.db
+        .collection("Properties")
+        .doc(id)
+        .set(property, { merge: true })
+        .then((success) => {
+          this.setState({
+            property,
+          });
+        });
+    });
+  };
+
+  deletePhoto = (photoUrl) => async () => {
+    const { property } = this.state;
+    const { id } = this.props.match.params;
+    const photoName = photoUrl.match(/[\w-]+.(jpg|png|jpeg|gif|svg)/);
+    const photoId = photoName[0];
+
+    await this.props.firebase.deleteDocument(photoId);
+
+    const photoList = this.state.property.photos.filter((photo) => {
+      return photo !== photoUrl;
+    });
+
+    property.photos = photoList;
+
+    this.props.firebase.db
+      .collection("Properties")
+      .doc(id)
+      .set(property, { merge: true })
+      .then((success) => {
+        this.setState({
+          property,
+        });
+      });
+  };
 
   // TODO this execute when render is finished
   async componentDidMount() {
     // TODO catch params in url
-    const { id } = this.props.match.params
-    const propertyCollection = this.props.firebase.db.collection('Properties')
-    const propertyResponse = await propertyCollection.doc(id).get()
+    const { id } = this.props.match.params;
+    const propertyCollection = this.props.firebase.db.collection("Properties");
+    const propertyResponse = await propertyCollection.doc(id).get();
     this.setState({
-      property: propertyResponse.data()
-    })
+      property: propertyResponse.data(),
+    });
   }
 
+  save = () => {
+    const { property } = this.state;
+    const { id } = this.props.match.params;
+    const textSearch = `${property.direction} ${property.city} ${property.country}`;
+    property.keywords = createKeyword(textSearch);
+
+    this.props.firebase.db
+      .collection("Properties")
+      .doc(id)
+      .set(property, { merge: true })
+      .then((success) => {
+        this.props.history.push("/");
+      });
+  };
+
   render() {
+    const photoKey = uuidv4();
+
     return (
       <Container style={style.container}>
         <Paper style={style.paper}>
@@ -173,6 +238,7 @@ class EditProperty extends Component {
                 size="large"
                 color="primary"
                 style={style.submit}
+                onClick={this.save}
               >
                 Save
               </Button>

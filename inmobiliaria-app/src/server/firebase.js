@@ -13,12 +13,17 @@ export default class Firebase {
     this.storage.ref().constructor.prototype.saveDocuments = function (
       documents
     ) {
-      var ref = this
-      return Promise.all(documents.map(function(file) {
-        return ref.child(file.alias).put(file).then(snapshot => {
-          return ref.child(file.alias).getDownloadURL()
+      var ref = this;
+      return Promise.all(
+        documents.map(function (file) {
+          return ref
+            .child(file.alias)
+            .put(file)
+            .then((snapshot) => {
+              return ref.child(file.alias).getDownloadURL();
+            });
         })
-      }))
+      );
     };
   }
 
@@ -37,6 +42,10 @@ export default class Firebase {
   }
 
   saveDocuments(documents) {
-    return this.storage.ref().saveDocuments(documents)
+    return this.storage.ref().saveDocuments(documents);
+  }
+
+  deleteDocument(document) {
+    return this.storage.ref().child(document).delete();
   }
 }

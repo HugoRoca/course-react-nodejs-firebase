@@ -103,6 +103,10 @@ class ListProperty extends Component {
     });
   };
 
+  editProperty = (id) => {
+    this.props.history.push('/property/edit/' + id)
+  }
+
   render() {
     return (
       <Container style={style.cardGrid}>
@@ -148,7 +152,12 @@ class ListProperty extends Component {
                       </Typography>
                     </CardContent>
                     <CardActions>
-                      <Button size="small" color="primary" variant="outlined">
+                      <Button
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                        onClick={() => this.editProperty(card.id)}
+                      >
                         Edit
                       </Button>
                       <Button

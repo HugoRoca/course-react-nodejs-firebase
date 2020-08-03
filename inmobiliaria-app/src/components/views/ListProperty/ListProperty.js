@@ -18,8 +18,8 @@ import { style } from "./ListProperty.css";
 import { HouseOutlined } from "@material-ui/icons";
 import { consumerFirebase } from "../../../server";
 import logoDefault from "../../../logo.svg";
-import { ArrowLeft, ArrowRight } from '@material-ui/icons'
-import { getData } from '../../../session/actions/property.action'
+import { ArrowLeft, ArrowRight } from "@material-ui/icons";
+import { getData } from "../../../session/actions/property.action";
 
 class ListProperty extends Component {
   state = {
@@ -75,22 +75,51 @@ class ListProperty extends Component {
     });
   };
 
+  nextPage = () => {
+    const { actualPage, pageSize, textSearch, pages } = this.state;
+    const firebase = this.props.firebase;
+
+    getData(firebase, pageSize, pages[actualPage].endValue, textSearch).then(
+      (firebaseReturnData) => {
+        if (firebaseReturnData.arrayProperties.length > 0) {
+          const page = {
+            initialValue: firebaseReturnData.initialValue,
+            endValue: firebaseReturnData.endValue,
+          };
+
+          pages.push(page);
+
+          this.setState({
+            pages,
+            actualPage: actualPage + 1,
+            properties: firebaseReturnData.arrayProperties,
+          });
+        }
+      }
+    );
+  };
+
   async componentDidMount() {
-    const {pageSize, textSearch, casa, pages, actualPage } = this.state
-    const firebase = this.props.firebase
-    const firebaseReturnData = await getData(firebase, pageSize, casa, textSearch)
+    const { pageSize, textSearch, casa, pages, actualPage } = this.state;
+    const firebase = this.props.firebase;
+    const firebaseReturnData = await getData(
+      firebase,
+      pageSize,
+      casa,
+      textSearch
+    );
     const page = {
       initialValue: firebaseReturnData.initialValue,
-      endValue: firebaseReturnData.endValue
-    }
+      endValue: firebaseReturnData.endValue,
+    };
 
-    pages.push(page)
+    pages.push(page);
 
     this.setState({
       properties: firebaseReturnData.arrayProperties,
       pages,
-      actualPage
-    })
+      actualPage,
+    });
   }
 
   deleteProperty = (id) => {
@@ -113,8 +142,8 @@ class ListProperty extends Component {
   };
 
   editProperty = (id) => {
-    this.props.history.push('/property/edit/' + id)
-  }
+    this.props.history.push("/property/edit/" + id);
+  };
 
   render() {
     return (
@@ -140,13 +169,18 @@ class ListProperty extends Component {
             />
           </Grid>
           <Grid item xs={12} sm={12} style={style.barButton}>
-            <Grid container spacing={1} direction="column" alignItems="flex-end">
+            <Grid
+              container
+              spacing={1}
+              direction="column"
+              alignItems="flex-end"
+            >
               <ButtonGroup size="small" aria-label="Small outline group">
                 <Button>
-                  <ArrowLeft/>
+                  <ArrowLeft />
                 </Button>
-                <Button>
-                  <ArrowRight/>
+                <Button onClick={this.nextPage}>
+                  <ArrowRight />
                 </Button>
               </ButtonGroup>
             </Grid>

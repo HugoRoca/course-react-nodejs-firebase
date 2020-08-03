@@ -19,14 +19,17 @@ import { HouseOutlined } from "@material-ui/icons";
 import { consumerFirebase } from "../../../server";
 import logoDefault from "../../../logo.svg";
 import { ArrowLeft, ArrowRight } from "@material-ui/icons";
-import { getData } from "../../../session/actions/property.action";
+import {
+  getData,
+  getPreviousData,
+} from "../../../session/actions/property.action";
 
 class ListProperty extends Component {
   state = {
     properties: [],
     textSearch: "",
     pages: [],
-    pageSize: 6,
+    pageSize: 3,
     casa: null,
     actualPage: 0,
   };
@@ -45,34 +48,54 @@ class ListProperty extends Component {
       name: e.target.value,
       typing: false,
       typingTimeout: setTimeout((goTime) => {
-        let objectQuery = this.props.firebase.db
-          .collection("Properties")
-          .orderBy("direction")
-          .where(
-            "keywords",
-            "array-contains",
-            self.state.textSearch.toLowerCase()
-          );
+        const firebase = this.props.firebase;
+        const { pageSize, pages } = this.state;
 
-        if (self.state.textSearch.trim() === "") {
-          objectQuery = this.props.firebase.db
-            .collection("Properties")
-            .orderBy("direction");
-        }
+        getPreviousData(firebase, pageSize, 0, self.state.textSearch).then(
+          (firebaseReturnData) => {
+            const page = {
+              initialValue: firebaseReturnData.initialValue,
+              endValue: firebaseReturnData.endValue,
+            };
 
-        objectQuery.get().then((snapshot) => {
-          const arrayProperty = snapshot.docs.map((doc) => {
-            const data = doc.data();
-            const id = doc.id;
-            return { id, ...data };
-          });
+            pages.push(page);
 
-          this.setState({
-            properties: arrayProperty,
-          });
-        });
+            self.setState({
+              pages,
+              actualPage: 0,
+              properties: firebaseReturnData.arrayProperties,
+            });
+          }
+        );
       }, 500),
     });
+  };
+
+  previousPage = () => {
+    const { actualPage, pageSize, textSearch, pages } = this.state;
+
+    if (actualPage > 0) {
+      const firebase = this.props.firebase;
+      getPreviousData(
+        firebase,
+        pageSize,
+        pages[actualPage - 1].initialValue,
+        textSearch
+      ).then((firebaseReturnData) => {
+        const page = {
+          initialValue: firebaseReturnData.initialValue,
+          endValue: firebaseReturnData.endValue,
+        };
+
+        pages.push(page);
+
+        this.setState({
+          pages,
+          actualPage: actualPage - 1,
+          properties: firebaseReturnData.arrayProperties,
+        });
+      });
+    }
   };
 
   nextPage = () => {
@@ -176,7 +199,7 @@ class ListProperty extends Component {
               alignItems="flex-end"
             >
               <ButtonGroup size="small" aria-label="Small outline group">
-                <Button>
+                <Button onClick={this.previousPage}>
                   <ArrowLeft />
                 </Button>
                 <Button onClick={this.nextPage}>

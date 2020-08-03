@@ -12,16 +12,23 @@ import {
   CardMedia,
   CardContent,
   CardActions,
+  ButtonGroup,
 } from "@material-ui/core";
 import { style } from "./ListProperty.css";
 import { HouseOutlined } from "@material-ui/icons";
 import { consumerFirebase } from "../../../server";
 import logoDefault from "../../../logo.svg";
+import { ArrowLeft, ArrowRight } from '@material-ui/icons'
+import { getData } from '../../../session/actions/property.action'
 
 class ListProperty extends Component {
   state = {
     properties: [],
     textSearch: "",
+    pages: [],
+    pageSize: 6,
+    casa: null,
+    actualPage: 0,
   };
 
   changeTextSearch = (e) => {
@@ -69,19 +76,21 @@ class ListProperty extends Component {
   };
 
   async componentDidMount() {
-    const objectQuery = this.props.firebase.db
-      .collection("Properties")
-      .orderBy("direction");
-    const snapshot = await objectQuery.get();
-    const arrayProperty = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      const id = doc.id;
-      return { id, ...data };
-    });
+    const {pageSize, textSearch, casa, pages, actualPage } = this.state
+    const firebase = this.props.firebase
+    const firebaseReturnData = await getData(firebase, pageSize, casa, textSearch)
+    const page = {
+      initialValue: firebaseReturnData.initialValue,
+      endValue: firebaseReturnData.endValue
+    }
+
+    pages.push(page)
 
     this.setState({
-      properties: arrayProperty,
-    });
+      properties: firebaseReturnData.arrayProperties,
+      pages,
+      actualPage
+    })
   }
 
   deleteProperty = (id) => {
@@ -129,6 +138,18 @@ class ListProperty extends Component {
               onChange={this.changeTextSearch}
               value={this.state.textSearch}
             />
+          </Grid>
+          <Grid item xs={12} sm={12} style={style.barButton}>
+            <Grid container spacing={1} direction="column" alignItems="flex-end">
+              <ButtonGroup size="small" aria-label="Small outline group">
+                <Button>
+                  <ArrowLeft/>
+                </Button>
+                <Button>
+                  <ArrowRight/>
+                </Button>
+              </ButtonGroup>
+            </Grid>
           </Grid>
           <Grid item xs={12} sm={12} style={style.gridTextField}>
             <Grid container spacing={4}>

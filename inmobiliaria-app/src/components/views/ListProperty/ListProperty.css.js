@@ -25,4 +25,7 @@ export const style = {
   cardContent: {
     flexGrow: 1,
   },
+  barButton: {
+    marginTop: "20px",
+  },
 };

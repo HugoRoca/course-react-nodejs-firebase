@@ -13,4 +13,8 @@ export const style = {
     with: "100%",
     marginTop: 8,
   },
+  submit: {
+    marginTop: 10,
+    marginBottom: 20,
+  },
 };

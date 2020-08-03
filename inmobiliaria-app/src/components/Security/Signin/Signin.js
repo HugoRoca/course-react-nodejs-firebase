@@ -5,6 +5,8 @@ import {
   Typography,
   TextField,
   Button,
+  Grid,
+  Link,
 } from "@material-ui/core";
 import { LockOpenOutlined } from "@material-ui/icons";
 import { compose } from "recompose";
@@ -99,11 +101,27 @@ class Signin extends Component {
               color="primary"
               size="large"
               fullWidth
+              style={style.submit}
               onClick={this.login}
             >
               SignIn
             </Button>
+            <Grid container>
+              <Grid item xs>
+                <Link href="#" variant="body2">
+                  {"Forgot password?"}
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link href="/signup" variant="body2">
+                  {"Don't have an account? Register Now"}
+                </Link>
+              </Grid>
+            </Grid>
           </form>
+          <Button fullWidth variant="contained" style={style.submit} href="#">
+            Sign in with your number phone
+          </Button>
         </div>
       </Container>
     );

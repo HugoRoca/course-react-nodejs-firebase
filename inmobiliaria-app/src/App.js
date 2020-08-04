@@ -9,6 +9,7 @@ import EditProperty from './components/views/EditProperty/EditProperty'
 import AppNavbar from "./components/Layout/AppNavBar/AppNavbar";
 import SignUp from "./components/Security/Signup/Signup";
 import SignIn from "./components/Security/Signin/Signin";
+import SignInPhone from './components/Security/SigninPhone/SigninPhone'
 import Profile from './components/Security/Profile/Profile'
 import { FirebaseContext } from "./server";
 import RouteAuth from "./components/Security/RouteAuth/RouteAuth";
@@ -83,6 +84,7 @@ function App(props) {
               />
               <Route path="/signup" exact component={SignUp}></Route>
               <Route path="/signin" exact component={SignIn}></Route>
+              <Route path="/signin/phone" exact component={SignInPhone}></Route>
             </Switch>
           </Grid>
         </MuiThemeProvider>

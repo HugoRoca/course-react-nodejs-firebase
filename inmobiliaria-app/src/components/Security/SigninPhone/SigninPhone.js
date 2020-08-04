@@ -50,6 +50,8 @@ class SigninPhone extends Component {
           this.setState({
             disable: true,
           });
+
+          window.location.reload();
         },
       }
     );
@@ -111,15 +113,25 @@ class SigninPhone extends Component {
             { merge: true }
           )
           .then((success) => {
-            dispatch({
-              type: "LOGIN",
-              session: {
-                id: authUser.user.uid,
-                phone: authUser.user.phoneNumber,
-              },
-              authenticate: true,
+            firebase.db
+              .collection("Users")
+              .doc(authUser.user.uid)
+              .get()
+              .then((doc) => {
+                dispatch({
+                  type: "LOGIN",
+                  session: doc.data(),
+                  authenticate: true,
+                });
+
+                this.props.history.push("/");
+              });
+          })
+          .catch((err) => {
+            openMessage(dispatch, {
+              open: true,
+              message: err.message,
             });
-            this.props.history.push("/");
           });
       });
   };

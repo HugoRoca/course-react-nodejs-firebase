@@ -103,7 +103,9 @@ class BarSession extends Component {
             <Button color="inherit" onClick={this.singOut}>
               Logout
             </Button>
-            <Button color="inherit">{user.name}</Button>
+            <Button color="inherit">
+              {!user.name ? user.phone : user.name}
+            </Button>
             <Avatar src={user.photo || photoUser}></Avatar>
           </div>
           <div className={classes.sectionMobile}>

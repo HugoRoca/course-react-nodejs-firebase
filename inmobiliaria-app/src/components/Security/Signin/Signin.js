@@ -63,6 +63,26 @@ class Signin extends Component {
     }
   };
 
+  resetPassword = () => {
+    const { firebase, user } = this.state;
+    const [{ session }, dispatch] = this.context;
+
+    firebase.auth
+      .sendPasswordResetEmail(user.email)
+      .then((success) => {
+        openMessage(dispatch, {
+          open: true,
+          message: "An email has been sent to your account",
+        });
+      })
+      .catch((err) => {
+        openMessage(dispatch, {
+          open: true,
+          message: err.message,
+        });
+      });
+  };
+
   render() {
     return (
       <Container maxWidth="xs">
@@ -108,7 +128,7 @@ class Signin extends Component {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                <Link href="#" variant="body2" onClick={this.resetPassword}>
                   {"Forgot password?"}
                 </Link>
               </Grid>

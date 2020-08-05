@@ -109,6 +109,7 @@ class EditProperty extends Component {
     const { id } = this.props.match.params;
     const textSearch = `${property.direction} ${property.city} ${property.country}`;
     property.keywords = createKeyword(textSearch);
+    property.userId = this.props.firebase.auth.currentUser.uid
 
     this.props.firebase.db
       .collection("Properties")

@@ -69,6 +69,8 @@ class NewProperty extends Component {
     this.props.firebase.saveDocuments(files).then((arrayUrl) => {
       property.photos = arrayUrl;
       property.keywords = keywords;
+      property.userId = this.props.firebase.auth.currentUser.uid
+      
       this.props.firebase.db
         .collection("Properties")
         .add(property)

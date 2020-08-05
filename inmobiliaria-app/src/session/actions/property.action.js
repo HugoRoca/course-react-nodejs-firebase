@@ -4,12 +4,14 @@ export const getData = async (firebase, pageSize, casa, text) => {
   return new Promise(async (resolve, reject) => {
     let properties = firebase.db
       .collection("Properties")
+      .where("userId", "==", firebase.auth.currentUser.uid)
       .orderBy("direction")
       .limit(pageSize);
 
     if (casa !== null) {
       properties = firebase.db
         .collection("Properties")
+        .where("userId", "==", firebase.auth.currentUser.uid)
         .orderBy("direction")
         .startAfter(casa)
         .limit(pageSize);
@@ -17,6 +19,7 @@ export const getData = async (firebase, pageSize, casa, text) => {
       if (text.trim() !== "") {
         properties = firebase.db
           .collection("Properties")
+          .where("userId", "==", firebase.auth.currentUser.uid)
           .orderBy("direction")
           .where("keywords", "array-contains", text.toLowerCase())
           .startAfter(casa)
@@ -50,12 +53,14 @@ export const getPreviousData = async (firebase, pageSize, casa, text) => {
   return new Promise(async (resolve, reject) => {
     let properties = firebase.db
       .collection("Properties")
+      .where("userId", "==", firebase.auth.currentUser.uid)
       .orderBy("direction")
       .limit(pageSize);
 
     if (casa !== null) {
       properties = firebase.db
         .collection("Properties")
+        .where("userId", "==", firebase.auth.currentUser.uid)
         .orderBy("direction")
         .startAt(casa)
         .limit(pageSize);
@@ -63,6 +68,7 @@ export const getPreviousData = async (firebase, pageSize, casa, text) => {
       if (text.trim() !== "") {
         properties = firebase.db
           .collection("Properties")
+          .where("userId", "==", firebase.auth.currentUser.uid)
           .orderBy("direction")
           .where("keywords", "array-contains", text.toLowerCase())
           .startAt(casa)

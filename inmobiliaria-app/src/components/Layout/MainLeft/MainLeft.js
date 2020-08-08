@@ -1,6 +1,6 @@
 import React from "react";
 import { List, ListItem, ListItemText, Divider } from "@material-ui/core";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 export const MainLeft = ({ classes }) => (
   <div className={classes.list}>
@@ -20,21 +20,28 @@ export const MainLeft = ({ classes }) => (
         <ListItemText
           classes={{ primary: classes.listItemText }}
           primary="new property"
-        ></ListItemText>
+        />
       </ListItem>
       <ListItem component={Link} button to="">
         <i className="material-icons">business</i>
         <ListItemText
           classes={{ primary: classes.listItemText }}
           primary="Properties"
-        ></ListItemText>
+        />
+      </ListItem>
+      <ListItem component={Link} button to="/user/list">
+        <i className="material-icons">mail_outline</i>
+        <ListItemText
+          classes={{ primary: classes.listItemText }}
+          primary="Users"
+        />
       </ListItem>
       <ListItem component={Link} button to="">
         <i className="material-icons">mail</i>
         <ListItemText
           classes={{ primary: classes.listItemText }}
           primary="Messages"
-        ></ListItemText>
+        />
       </ListItem>
     </List>
   </div>

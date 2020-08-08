@@ -12,15 +12,19 @@ import {
 } from "@material-ui/core";
 import { style } from "./ListUser.css";
 import { getUsersApp } from "../../../redux/actions/user.action";
+import { sendEmail } from "../../../redux/actions/email.action";
+import { useStateValue } from "../../../session/store";
+import { openMessage } from "../../../session/actions/snackBar.action";
 
 const ListUser = (props) => {
+  const [{ session }, dispatch] = useStateValue();
   const [isLoading, setIsLoading] = useState(false);
   const listArray = useSelector((state) => state.userRedux.users);
-  const dispatch = useDispatch();
+  const dispatchRedux = useDispatch();
 
   useEffect(() => {
     async function getData() {
-      await getUsersApp(dispatch);
+      await getUsersApp(dispatchRedux);
     }
 
     if (!isLoading) {
@@ -28,6 +32,20 @@ const ListUser = (props) => {
       getData();
     }
   });
+
+  const sendEmailButton = (email) => {
+    const obj = {
+      email,
+      title: "Message from APP React extreme",
+      message: "This email es for test",
+    };
+    sendEmail(obj).then((data) => {
+      openMessage(dispatch, {
+        open: true,
+        message: "the message send to " + email,
+      });
+    });
+  };
 
   return (
     <Container style={style.container}>
@@ -43,7 +61,7 @@ const ListUser = (props) => {
                           {row.email || row.phone}
                         </TableCell>
                         <TableCell align="left">
-                          {row.name ? (row.name + " " + row.last_name) : ''}
+                          {row.name ? row.name + " " + row.last_name : ""}
                         </TableCell>
                         <TableCell align="left">
                           <Button
@@ -59,6 +77,7 @@ const ListUser = (props) => {
                             variant="contained"
                             color="primary"
                             size="small"
+                            onClick={() => sendEmailButton(row.email)}
                           >
                             Send message
                           </Button>

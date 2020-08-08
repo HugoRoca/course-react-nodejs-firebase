@@ -11,6 +11,7 @@ import SignUp from "./components/Security/Signup/Signup";
 import SignIn from "./components/Security/Signin/Signin";
 import SignInPhone from "./components/Security/SigninPhone/SigninPhone";
 import Profile from "./components/Security/Profile/Profile";
+import ListUser from './components/views/ListUser/ListUser'
 import { FirebaseContext } from "./server";
 import RouteAuth from "./components/Security/RouteAuth/RouteAuth";
 
@@ -84,6 +85,12 @@ function App(props) {
                   exact
                   path="/property/edit/:id"
                   component={EditProperty}
+                  authenticateFirebase={firebase.auth.currentUser}
+                />
+                <RouteAuth
+                  exact
+                  path="/user/list"
+                  component={ListUser}
                   authenticateFirebase={firebase.auth.currentUser}
                 />
                 <Route path="/signup" exact component={SignUp}></Route>

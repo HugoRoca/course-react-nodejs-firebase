@@ -13,11 +13,16 @@ export const getUsersApp = (dispatch) => {
   });
 };
 
-export const updateRoles = (dispatch, user) => {
+export const updateRoles = (dispatch, user, role) => {
   return new Promise(async (resolve, reject) => {
+    const params = {
+      id: user.id,
+      role,
+      roles: user.roles,
+    };
     const dataRest = await axios.post(
       `https://us-central1-storied-smile-283703.cloudfunctions.net/usersCrud`,
-      user
+      params
     );
     dispatch({
       type: "UPDATE_ROLES",

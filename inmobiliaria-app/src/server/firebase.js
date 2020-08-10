@@ -2,15 +2,24 @@ import app from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 import "firebase/storage";
-import config from "./key.json";
+import 'firebase/messaging'
+// import config from "./key.json";
+import { keyFirebase, keyNotification } from './keys'
 
 export default class Firebase {
   constructor() {
-    app.initializeApp(config);
+    app.initializeApp(keyFirebase);
     this.db = app.firestore();
     this.auth = app.auth();
     this.storage = app.storage();
     this.authorization = app.auth;
+    this.messagingValidation = app.messaging // TODO this is a object
+
+    if (this.messagingValidation.isSupported()){
+      this.messaging = app.messaging() // TODO this is a method
+      this.messaging.usePublicVapidKey(keyNotification)
+    }
+
     this.storage.ref().constructor.prototype.saveDocuments = function (
       documents
     ) {

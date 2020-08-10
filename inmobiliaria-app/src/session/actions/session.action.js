@@ -74,3 +74,12 @@ export const logout = (dispatch, firebase) => {
     });
   });
 };
+
+export const refreshSession = (firebase) => {
+  return new Promise((resolve, reject) => {
+    firebase.auth.onAuthStateChanged((user) => {
+      user.getIdToken(true);
+      resolve();
+    });
+  });
+};

@@ -25,6 +25,7 @@ import { useStateValue } from "./session/store";
 
 import store from "./redux/store";
 import { Provider } from "react-redux";
+import { openMessage } from "./session/actions/snackBar.action";
 
 function App(props) {
   let firebase = React.useContext(FirebaseContext);
@@ -35,6 +36,15 @@ function App(props) {
     firebase.isStarted().then((res) => {
       setupFirebaseStart(res);
     });
+
+    if (firebase.messagingValidation.isSupported()){
+      firebase.messaging.onMessage(payload => {
+        openMessage(dispatch, {
+          open: true,
+          message: `${payload.notification.title}. ${payload.notification.body}`
+        })
+      })
+    }
   });
 
   return authenticationStarted !== false ? (

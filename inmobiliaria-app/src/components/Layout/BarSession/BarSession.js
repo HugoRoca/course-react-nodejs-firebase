@@ -18,6 +18,7 @@ import {
   Drawer,
   Avatar,
 } from "@material-ui/core";
+import { getPermissionNotification } from "../../../session/actions/notification.action";
 
 class BarSession extends Component {
   static contextType = StateContext;
@@ -52,6 +53,16 @@ class BarSession extends Component {
     });
   };
 
+  activateNotifications = async () => {
+    const { firebase } = this.state;
+    const [{ session }, dispatch] = this.context;
+    const { user } = session;
+
+    if (firebase.messagingValidation.isSupported()) {
+      await getPermissionNotification(firebase, user, dispatch);
+    }
+  };
+
   render() {
     const { classes } = this.props;
     const [{ session }, dispatch] = this.context;
@@ -69,7 +80,10 @@ class BarSession extends Component {
             onClick={this.toggleDrawer("left", false)}
             onKeyDown={this.toggleDrawer("left", false)}
           >
-            <MainLeft classes={classes}></MainLeft>
+            <MainLeft
+              classes={classes}
+              permissionForGetNotification={this.activateNotifications}
+            ></MainLeft>
           </div>
         </Drawer>
         <Drawer

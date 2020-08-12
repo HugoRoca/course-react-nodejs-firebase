@@ -6,11 +6,13 @@ import * as serviceWorker from "./serviceWorker";
 import Firebase, { FirebaseContext } from "./server";
 import { initialState } from "./session/initialState";
 import { StateProvider } from "./session/store";
-import { mainReducer } from './session/reducers'
+import { mainReducer } from "./session/reducers";
+
+const firebase = new Firebase();
 
 ReactDOM.render(
   <React.StrictMode>
-    <FirebaseContext.Provider value={new Firebase()}>
+    <FirebaseContext.Provider value={firebase}>
       <StateProvider initialState={initialState} reducer={mainReducer}>
         <App />
       </StateProvider>
@@ -18,6 +20,18 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+if (firebase.messagingValidation.isSupported()) {
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js")
+      .then((register) => {
+        console.log("notification register");
+      }).catch(err => {
+        console.log("failure register in the serviceWorker")
+      });
+  }
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

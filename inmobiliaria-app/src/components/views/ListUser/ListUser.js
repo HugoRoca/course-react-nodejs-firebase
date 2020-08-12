@@ -23,6 +23,7 @@ import { useStateValue } from "../../../session/store";
 import { openMessage } from "../../../session/actions/snackBar.action";
 import { refreshSession } from "../../../session/actions/session.action";
 import { consumerFirebase } from "../../../server";
+import { sendNotification } from "../../../session/actions/notification.action";
 
 const ListUser = (props) => {
   const [{ session }, dispatch] = useStateValue();
@@ -147,6 +148,27 @@ const ListUser = (props) => {
     });
   };
 
+  const sendPushNotification = (user) => {
+    if (props.firebase.messagingValidation.isSupported()) {
+      const listTokens = user.tokenArray;
+      const obj = {
+        token: listTokens || [],
+      };
+
+      sendNotification(obj).then((response) => {
+        openMessage(dispatch, {
+          open: true,
+          message: response.data.message,
+        });
+      });
+    } else {
+      openMessage(dispatch, {
+        open: true,
+        message: "This version browser not supported notifications",
+      });
+    }
+  };
+
   return (
     <Container style={style.container}>
       <Dialog
@@ -230,6 +252,16 @@ const ListUser = (props) => {
                             onClick={() => openDialogWithUser(row)}
                           >
                             Roles
+                          </Button>
+                        </TableCell>
+                        <TableCell align="left">
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={() => sendPushNotification(row)}
+                          >
+                            Send Notification
                           </Button>
                         </TableCell>
                         <TableCell align="left">

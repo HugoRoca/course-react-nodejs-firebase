@@ -73,6 +73,14 @@ const ListUser = (props) => {
   };
 
   const addRole = async () => {
+    if (selectRole === "0") {
+      openMessage(dispatch, {
+        open: true,
+        message: "Select role",
+      });
+      return;
+    }
+
     if (!userDialog.roles) {
       userDialog.roles = [];
     }
@@ -101,19 +109,41 @@ const ListUser = (props) => {
 
       userDialog.roles.push({ name: selectRole, state: true });
 
-      await updateRoles(dispatchRedux, userDialog, customClaims);
-      await getUsersApp(dispatchRedux);
+      await updateRoles(
+        dispatchRedux,
+        userDialog,
+        customClaims,
+        props.firebase
+      ).then((response) => {
+        if (response.data.status !== "error") {
+          getUsersApp(dispatchRedux);
 
-      refreshSession(props.firebase);
+          refreshSession(props.firebase);
 
-      openMessage(dispatch, {
-        open: true,
-        message: "Added role successfully",
+          openMessage(dispatch, {
+            open: true,
+            message: "Added role successfully",
+          });
+        } else {
+          const rolesOriginal = userDialog.roles.filter(
+            (rol) => rol.name !== selectRole
+          );
+          setUserDialog({
+            ...userDialog,
+            roles: rolesOriginal,
+          });
+          openMessage(dispatch, {
+            open: true,
+            message: response.data.message,
+          });
+        }
+        getUsersApp(dispatchRedux);
       });
     }
   };
 
   const removeRol = async (rol) => {
+    const userRolesOriginal = userDialog.roles;
     const newArrayRoles = userDialog.roles.filter(
       (currentRol) => currentRol.name !== rol
     );
@@ -137,14 +167,32 @@ const ListUser = (props) => {
       configurable: true,
     });
 
-    await updateRoles(dispatchRedux, userDialog, customClaims);
-    await getUsersApp(dispatchRedux);
+    await updateRoles(
+      dispatchRedux,
+      userDialog,
+      customClaims,
+      props.firebase
+    ).then((response) => {
+      if (response.data.status !== "error") {
+        getUsersApp(dispatchRedux);
 
-    refreshSession(props.firebase);
+        refreshSession(props.firebase);
 
-    openMessage(dispatch, {
-      open: true,
-      message: "Remove role successfully",
+        openMessage(dispatch, {
+          open: true,
+          message: "Remove role successfully",
+        });
+      } else {
+        setUserDialog({
+          ...userDialog,
+          roles: userRolesOriginal,
+        });
+        openMessage(dispatch, {
+          open: true,
+          message: response.data.message,
+        });
+        getUsersApp(dispatchRedux);
+      }
     });
   };
 

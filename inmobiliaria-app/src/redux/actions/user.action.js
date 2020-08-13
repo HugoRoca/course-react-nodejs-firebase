@@ -13,21 +13,30 @@ export const getUsersApp = (dispatch) => {
   });
 };
 
-export const updateRoles = (dispatch, user, role) => {
+export const updateRoles = (dispatch, user, role, firebase) => {
   return new Promise(async (resolve, reject) => {
-    const params = {
-      id: user.id,
-      role,
-      roles: user.roles,
-    };
-    const dataRest = await axios.post(
-      `https://us-central1-storied-smile-283703.cloudfunctions.net/usersCrud`,
-      params
-    );
-    dispatch({
-      type: "UPDATE_ROLES",
-      payload: dataRest.data,
+    firebase.auth.onAuthStateChanged((userResponse) => {
+      if (userResponse) {
+        userResponse.getIdToken().then(async (tokenUser) => {
+          const headers = {
+            "Content-Type": "Application/json",
+            authorization: "Bearer " + tokenUser,
+          };
+
+          const params = {
+            id: user.id,
+            role,
+            roles: user.roles,
+          };
+
+          const response = await axios.post(
+            "https://us-central1-storied-smile-283703.cloudfunctions.net/usersCrud",
+            params,
+            { "headers": headers }
+          );
+          resolve(response);
+        });
+      }
     });
-    resolve();
   });
 };
